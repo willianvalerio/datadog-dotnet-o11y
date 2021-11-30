@@ -14,6 +14,7 @@ using System.Text.Json.Serialization;
 using Datadog.Trace;
 using Serilog.Context;
 using Prometheus;
+using StatsdClient;
 
 namespace TodoApi.Controllers
 {
@@ -23,25 +24,32 @@ namespace TodoApi.Controllers
     public class TodoItemsController : ControllerBase
     {
         private readonly TodoContext _context;
+
+        private StatsdConfig dogStatsdConfig;
         readonly ILogger<TodoItemsController> _logger;
 
         private static readonly Gauge TotalTodoItems = Metrics
-            .CreateGauge("todoitems_total", "Total Items, labelled by status", 
+            .CreateGauge("todoitems_total", "Total Items, labelled by status)", 
             new GaugeConfiguration{
                 LabelNames = new[] { "iscompleted" }
             });
-        private static readonly Counter AddedTodoItems = Metrics
-            .CreateCounter("todoitems_added", "Total Items Added");
-        private static readonly Counter DeletedTodoItems = Metrics
-            .CreateCounter("todoitems_deleted", "Total Items Deleted");
-        
-        private static readonly Counter UpdatedTodoItems = Metrics
-            .CreateCounter("todoitems_updated", "Total Items Updated");
+
+         private static readonly Counter TodoItemsAction = Metrics
+            .CreateCounter("todoitems_action", "Total Items, labelled by action)",
+            new CounterConfiguration{
+                LabelNames = new[] { "action" }
+            });
 
         public TodoItemsController(TodoContext context, ILogger<TodoItemsController> logger)
         {
              _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _context = context;
+
+            dogStatsdConfig = new StatsdConfig{
+                StatsdServerName = "agent",
+                StatsdPort = 8125,
+                Prefix = "todoapi.dogstatsd"
+            };
         }
         #endregion
 
@@ -95,7 +103,7 @@ namespace TodoApi.Controllers
                 }
                 TotalTodoItems.WithLabels(OldStatus).Dec();
                 TotalTodoItems.WithLabels(todoItem.IsComplete.ToString().ToLower()).Inc();
-                UpdatedTodoItems.Inc();
+                TodoItemsAction.WithLabels("updated").Inc();
 
             }
             catch (DbUpdateConcurrencyException)
@@ -128,7 +136,13 @@ namespace TodoApi.Controllers
             }
 
             TotalTodoItems.WithLabels(todoItem.IsComplete.ToString().ToLower()).Inc();
-            AddedTodoItems.Inc();
+            TodoItemsAction.WithLabels("added").Inc();
+
+            // Example with dogstatsd
+            using(var dogStatsdService = new DogStatsdService()){
+                dogStatsdService.Configure(dogStatsdConfig);
+                dogStatsdService.Counter("todoitems.count",1,tags: new[] { "action:added" });                    
+            }
             
             return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
         }
@@ -173,7 +187,7 @@ namespace TodoApi.Controllers
             }
 
             TotalTodoItems.WithLabels(todoItem.IsComplete.ToString().ToLower()).Dec();
-            DeletedTodoItems.Inc();
+            TodoItemsAction.WithLabels("deleted").Inc();
 
             return todoItem;
         }
