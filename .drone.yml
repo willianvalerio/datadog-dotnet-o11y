@@ -1,0 +1,19 @@
+kind: pipeline
+name: default
+
+
+steps:
+- name: publish docker  
+  image: plugins/docker
+  settings:
+    repo: willianvalerio/dd-dotnet-todolist
+    tags:
+      - '2.0.5'
+      - 'latest'
+    username:
+      from_secret: DOCKER_USERNAME
+    password: 
+      from_secret: DOCKER_PASSWORD
+  when:
+    branch:
+    - main
