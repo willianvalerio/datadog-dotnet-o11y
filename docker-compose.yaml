@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   agent:
-    image: "gcr.io/datadoghq/agent:7.31.1"
+    image: "gcr.io/datadoghq/agent:7.32.1"
     labels:
       squad: infra
     container_name: agent
