@@ -170,8 +170,9 @@ namespace TodoApi.Controllers
 
             //simulando um request externo
             using (var parentScope = 
-                    Tracer.Instance.StartActive("http.request",serviceName:"apiexterna.com")){
+                    Tracer.Instance.StartActive("http.request")){
                 Thread.Sleep(1000);
+                parentScope.Span.ServiceName = "apiexterna.com";
                 parentScope.Span.SetTag("http.method","GET");
                 parentScope.Span.SetTag("http.status_code","200");
                 parentScope.Span.ResourceName = "GET apiexterna.com/exemplo";

@@ -4,7 +4,8 @@ services:
   agent:
     image: "gcr.io/datadoghq/agent:7.32.1"
     labels:
-      squad: infra
+      squad: customer
+      tribe: sre
     container_name: agent
     environment:
       - DD_API_KEY=${DD_API_KEY}
@@ -16,7 +17,6 @@ services:
       - DD_LOG_LEVEL=WARN
       - DD_DOCKER_LABELS_AS_TAGS={"squad":"squad"}
       - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
-      - DD_LOGS_CONFIG_COMPRESSION_LEVEL=9
     ports:
       - "8126:8126"
       - "8125:8125"
@@ -24,6 +24,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /proc/:/host/proc/:ro
       - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      - /var/run/datadog:/var/run/datadog
 
   todoapi:
     #image: willianvalerio/dd-dotnet-todolist
@@ -46,6 +47,7 @@ services:
           }]
         }]
       squad: customer
+      tribe: onboarding
       com.datadoghq.tags.service: todoapi
       com.datadoghq.tags.env: workshop
       com.datadoghq.tags.version: 1.0
@@ -63,3 +65,5 @@ services:
       - DD_RUNTIME_METRICS_ENABLED=true
       - DD_SERVICE=todoapi
       - DD_VERSION=1.0
+    volumes:
+      - /var/run/datadog:/var/run/datadog:ro
