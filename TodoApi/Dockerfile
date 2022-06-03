@@ -13,7 +13,7 @@ RUN dotnet publish "TodoApi.csproj" -c Release -o /app/publish
 FROM base AS final
 COPY --from=publish /app/publish .
 WORKDIR /opt/datadog
-ARG DATADOG_TRACE=2.1.1
+ARG DATADOG_TRACE=2.9.0
 RUN curl -LO https://github.com/DataDog/dd-trace-dotnet/releases/download/v${DATADOG_TRACE}/datadog-dotnet-apm_${DATADOG_TRACE}_amd64.deb && \
     dpkg -i ./datadog-dotnet-apm_${DATADOG_TRACE}_amd64.deb && \
     rm -f /datadog-dotnet-apm_${DATADOG_TRACE}_amd64.deb
