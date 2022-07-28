@@ -1,8 +1,8 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src/TodoApi
 COPY . .
 RUN dotnet build "TodoApi.csproj" -c Release -o /app/build
@@ -13,7 +13,8 @@ RUN dotnet publish "TodoApi.csproj" -c Release -o /app/publish
 FROM base AS final
 COPY --from=publish /app/publish .
 WORKDIR /opt/datadog
-ARG DATADOG_TRACE=2.9.0
+ARG DATADOG_TRACE=2.12.0
+RUN apt-get update && apt-get install -y curl
 RUN curl -LO https://github.com/DataDog/dd-trace-dotnet/releases/download/v${DATADOG_TRACE}/datadog-dotnet-apm_${DATADOG_TRACE}_amd64.deb && \
     dpkg -i ./datadog-dotnet-apm_${DATADOG_TRACE}_amd64.deb && \
     rm -f /datadog-dotnet-apm_${DATADOG_TRACE}_amd64.deb

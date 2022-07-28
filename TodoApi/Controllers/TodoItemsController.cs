@@ -15,6 +15,7 @@ using Datadog.Trace;
 using Serilog.Context;
 using Prometheus;
 using StatsdClient;
+using System.Net.Http;
 
 namespace TodoApi.Controllers
 {
@@ -27,6 +28,9 @@ namespace TodoApi.Controllers
 
         private StatsdConfig dogStatsdConfig;
         readonly ILogger<TodoItemsController> _logger;
+
+        private static HttpClient _httpClient;
+        private static HttpClient HttpClient => _httpClient ?? (_httpClient = new HttpClient());
 
         private static readonly Gauge TotalTodoItems = Metrics
             .CreateGauge("todoitems_total", "Total Items, labelled by status)", 
@@ -129,6 +133,8 @@ namespace TodoApi.Controllers
         {           
             _context.TodoItems.Add(todoItem);
             await _context.SaveChangesAsync();
+
+            HttpResponseMessage response = HttpClient.GetAsync("https://httpbin.org/get").Result;
 
             using (LogContext.PushProperty("TodoItemId", todoItem.Id))
             using (LogContext.PushProperty("TodoItemName", todoItem.Name)){
