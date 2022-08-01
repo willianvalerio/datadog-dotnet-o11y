@@ -50,8 +50,7 @@ namespace TodoApi.Controllers
             _context = context;
 
             dogStatsdConfig = new StatsdConfig{
-                StatsdServerName = "agent",
-                StatsdPort = 8125,
+                StatsdServerName = "unix:///var/run/datadog/dsd.socket",
                 Prefix = "todoapi.dogstatsd"
             };
         }

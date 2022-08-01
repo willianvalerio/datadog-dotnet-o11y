@@ -16,10 +16,12 @@ services:
       - DD_TAGS=env:workshop source:docker project:workshop role:application
       - DD_LOG_LEVEL=WARN
       - DD_DOCKER_LABELS_AS_TAGS={"squad":"squad"}
-      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
-    ports:
-      - "8126:8126"
-      - "8125:8125"
+      #- DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+      - DD_DOGSTATSD_SOCKET=/var/run/datadog/dsd.socket
+      - DD_APM_RECEIVER_SOCKET=/var/run/datadog/apm.socket
+    #ports:
+      #- "8126:8126"
+      #- "8125:8125"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
@@ -62,10 +64,11 @@ services:
         }]    
     environment:
       - DD_LOGS_INJECTION=true
-      - DD_AGENT_HOST=agent
+      #- DD_AGENT_HOST=agent
+      - DD_TRACE_AGENT_URL=unix:///var/run/datadog/apm.socket
       - DD_RUNTIME_METRICS_ENABLED=true
       - DD_SERVICE=todoapi
       - DD_VERSION=2.0
-      #- DD_TRACE_DEBUG=true
+      - DD_TRACE_DEBUG=true
     volumes:
       - /var/run/datadog:/var/run/datadog:ro
