@@ -1,1 +1,606 @@
-{"title":"TodoAPI","description":"","widgets":[{"id":1298267633136362,"definition":{"title":"Application Observability","type":"group","banner_img":"/static/images/integration_dashboard/generic_hero.png","show_title":true,"layout_type":"ordered","widgets":[{"id":4786570320791264,"definition":{"type":"note","content":"Check the github repo\n\nhttps://github.com/willianvalerio/datadog-dotnet-o11y","background_color":"vivid_purple","font_size":"14","text_align":"center","vertical_align":"center","show_tick":false,"tick_pos":"50%","tick_edge":"left","has_padding":true},"layout":{"x":0,"y":0,"width":4,"height":2}},{"id":1929367019951582,"definition":{"title":"DogStatsD Created Tasks","title_size":"16","title_align":"left","type":"query_value","requests":[{"formulas":[{"formula":"query1"}],"conditional_formats":[{"custom_fg_color":"#f0ea3d","comparator":">=","palette":"custom_text","value":0}],"response_format":"scalar","queries":[{"query":"sum:todoapi.dogstatsd.todoitems.count{*}.as_count()","data_source":"metrics","name":"query1","aggregator":"sum"}]}],"autoscale":true,"custom_unit":"tasks","precision":2},"layout":{"x":0,"y":2,"width":4,"height":2}}]},"layout":{"x":0,"y":0,"width":4,"height":7}},{"id":7342055198236648,"definition":{"title":"Tasks Overview","type":"group","background_color":"vivid_green","show_title":true,"layout_type":"ordered","widgets":[{"id":925805867343380,"definition":{"title":"Items by completed status","title_size":"16","title_align":"left","requests":[{"formulas":[{"formula":"exclude_null(default_zero(query1))"}],"queries":[{"query":"sum:todoapi.todoitems_total{$service,$env} by {iscompleted}","data_source":"metrics","name":"query1","aggregator":"last"}],"response_format":"scalar"}],"type":"sunburst","hide_total":true,"legend":{"hide_percent":false,"type":"inline"}},"layout":{"x":0,"y":0,"width":8,"height":4}},{"id":1,"definition":{"title":"Added Items","title_size":"16","title_align":"left","type":"query_value","requests":[{"formulas":[{"formula":"default_zero(query1)"}],"conditional_formats":[{"custom_bg_color":"#3e63b0","custom_fg_color":"#8ee1b2","comparator":">=","palette":"custom_text","value":0}],"response_format":"scalar","queries":[{"query":"sum:todoapi.todoitems_action{$env,$service,action:added}.as_count()","data_source":"metrics","name":"query1","aggregator":"sum"}]}],"autoscale":true,"precision":2},"layout":{"x":0,"y":4,"width":3,"height":2}},{"id":7874139011706534,"definition":{"title":"Deleted Items","title_size":"16","title_align":"left","type":"query_value","requests":[{"formulas":[{"formula":"default_zero(query1)"}],"conditional_formats":[{"custom_bg_color":"#3e63b0","custom_fg_color":"#8ee1b2","comparator":">=","palette":"custom_text","value":0}],"response_format":"scalar","queries":[{"query":"sum:todoapi.todoitems_action{$env,$service,action:deleted}.as_count()","data_source":"metrics","name":"query1","aggregator":"sum"}]}],"autoscale":true,"precision":2},"layout":{"x":3,"y":4,"width":3,"height":2}},{"id":2,"definition":{"title":"Updated Items","title_size":"16","title_align":"left","type":"query_value","requests":[{"formulas":[{"formula":"default_zero(query1)"}],"conditional_formats":[{"custom_bg_color":"#1a3161","custom_fg_color":"#a1e8b6","comparator":">=","palette":"custom_text","value":0}],"response_format":"scalar","queries":[{"query":"sum:todoapi.todoitems_action{$service,$env,action:updated}.as_count()","data_source":"metrics","name":"query1","aggregator":"sum"}]}],"autoscale":true,"precision":2},"layout":{"x":6,"y":4,"width":2,"height":2}}]},"layout":{"x":4,"y":0,"width":8,"height":7}},{"id":5037842912875164,"definition":{"title":"Application Performance Metrics","type":"group","background_color":"vivid_blue","show_title":true,"layout_type":"ordered","widgets":[{"id":4853566476241182,"definition":{"title":"Latencia","title_size":"16","title_align":"left","show_legend":false,"legend_layout":"auto","legend_columns":["avg","min","max","value","sum"],"time":{},"type":"timeseries","requests":[{"formulas":[{"alias":"Average Latency","formula":"default_zero(query1)"}],"queries":[{"query":"avg:trace.aspnet_core.request{$service,$env}","data_source":"metrics","name":"query1"}],"response_format":"timeseries","style":{"palette":"green","line_type":"solid","line_width":"normal"},"display_type":"line"}],"yaxis":{"include_zero":true,"scale":"linear","label":"","min":"auto","max":"auto"},"markers":[]},"layout":{"x":0,"y":0,"width":6,"height":2}},{"id":4442668334150462,"definition":{"title":"Hits","title_size":"16","title_align":"left","show_legend":false,"legend_layout":"auto","legend_columns":["avg","min","max","value","sum"],"time":{},"type":"timeseries","requests":[{"formulas":[{"alias":"Hits","formula":"default_zero(query1)"}],"queries":[{"query":"sum:trace.aspnet_core.request.hits{$service,$env}.as_count()","data_source":"metrics","name":"query1"}],"response_format":"timeseries","style":{"palette":"cool","line_type":"solid","line_width":"normal"},"display_type":"bars"}],"yaxis":{"include_zero":true,"scale":"linear","label":"","min":"auto","max":"auto"},"markers":[]},"layout":{"x":0,"y":2,"width":6,"height":2}}]},"layout":{"x":0,"y":0,"width":6,"height":5}},{"id":7225358948722832,"definition":{"title":"Infrastructure Metrics","type":"group","background_color":"vivid_orange","show_title":true,"layout_type":"ordered","widgets":[{"id":6064521968349728,"definition":{"title":"CPU","title_size":"16","title_align":"left","show_legend":false,"legend_layout":"auto","legend_columns":["avg","min","max","value","sum"],"time":{},"type":"timeseries","requests":[{"formulas":[{"alias":"CPU Usage","formula":"default_zero(query1)"}],"queries":[{"query":"avg:docker.cpu.usage{$service,$env} by {service}","data_source":"metrics","name":"query1"}],"response_format":"timeseries","style":{"palette":"purple","line_type":"solid","line_width":"normal"},"display_type":"line"}],"yaxis":{"include_zero":true,"scale":"linear","label":"","min":"auto","max":"auto"},"markers":[]},"layout":{"x":0,"y":0,"width":6,"height":2}},{"id":3614315062585762,"definition":{"title":"RSS Memory","title_size":"16","title_align":"left","show_legend":false,"legend_layout":"auto","legend_columns":["avg","min","max","value","sum"],"time":{},"type":"timeseries","requests":[{"formulas":[{"alias":"RSS Memory","formula":"default_zero(query1)"}],"queries":[{"query":"avg:docker.mem.rss{$service,$env} by {service}","data_source":"metrics","name":"query1"}],"response_format":"timeseries","style":{"palette":"blue","line_type":"solid","line_width":"normal"},"display_type":"line"}],"yaxis":{"include_zero":true,"scale":"linear","label":"","min":"auto","max":"auto"},"markers":[]},"layout":{"x":0,"y":2,"width":6,"height":2}}]},"layout":{"x":6,"y":0,"width":6,"height":5}},{"id":5343362889745036,"definition":{"title":"Logs","type":"group","background_color":"vivid_pink","show_title":true,"layout_type":"ordered","widgets":[{"id":4222401884338394,"definition":{"title":"Service Log Stream","title_size":"16","title_align":"left","type":"log_stream","indexes":[],"query":"$service $env","sort":{"column":"time","order":"desc"},"columns":["@TodoItemName","@TodoItemId"],"show_date_column":true,"show_message_column":true,"message_display":"inline"},"layout":{"x":0,"y":0,"width":12,"height":4}}]},"layout":{"x":0,"y":12,"width":12,"height":5}}],"template_variables":[{"name":"service","default":"todoapi","prefix":"service","available_values":[]},{"name":"env","default":"workshop","prefix":"env","available_values":[]}],"layout_type":"ordered","is_read_only":false,"notify_list":[],"reflow_type":"fixed","id":"n3x-vcs-d49"}
+{
+    "title": "TodoAPI",
+    "description": "",
+    "widgets": [
+        {
+            "id": 1298267633136362,
+            "definition": {
+                "title": "Application Observability",
+                "type": "group",
+                "banner_img": "/static/images/integration_dashboard/generic_hero.png",
+                "show_title": true,
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 4786570320791264,
+                        "definition": {
+                            "type": "note",
+                            "content": "Check the github repo\n\nhttps://github.com/willianvalerio/datadog-dotnet-o11y",
+                            "background_color": "vivid_purple",
+                            "font_size": "14",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": false,
+                            "tick_pos": "50%",
+                            "tick_edge": "left",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 4,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 1929367019951582,
+                        "definition": {
+                            "title": "DogStatsD Created Tasks",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "conditional_formats": [
+                                        {
+                                            "custom_fg_color": "#f0ea3d",
+                                            "comparator": ">=",
+                                            "palette": "custom_text",
+                                            "value": 0
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:todoapi.dogstatsd.todoitems.count{*} by {iscompleted}.as_count()",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "sum"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "custom_unit": "tasks",
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 2,
+                            "width": 4,
+                            "height": 2
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 0,
+                "width": 4,
+                "height": 7
+            }
+        },
+        {
+            "id": 7342055198236648,
+            "definition": {
+                "title": "Tasks Overview",
+                "type": "group",
+                "background_color": "vivid_green",
+                "show_title": true,
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 925805867343380,
+                        "definition": {
+                            "title": "Items by completed status",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "exclude_null(default_zero(query1))"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "query": "sum:todoapi.todoitems_total{$service,$env} by {iscompleted}",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "last"
+                                        }
+                                    ],
+                                    "response_format": "scalar"
+                                }
+                            ],
+                            "type": "sunburst",
+                            "hide_total": true,
+                            "legend": {
+                                "hide_percent": false,
+                                "type": "inline"
+                            }
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 8,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 1,
+                        "definition": {
+                            "title": "Added Items",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "default_zero(query1)"
+                                        }
+                                    ],
+                                    "conditional_formats": [
+                                        {
+                                            "custom_bg_color": "#3e63b0",
+                                            "custom_fg_color": "#8ee1b2",
+                                            "comparator": ">=",
+                                            "palette": "custom_text",
+                                            "value": 0
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:todoapi.todoitems_action{$env,$service,action:added}.as_count()",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "sum"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 4,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 7874139011706534,
+                        "definition": {
+                            "title": "Deleted Items",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "default_zero(query1)"
+                                        }
+                                    ],
+                                    "conditional_formats": [
+                                        {
+                                            "custom_bg_color": "#3e63b0",
+                                            "custom_fg_color": "#8ee1b2",
+                                            "comparator": ">=",
+                                            "palette": "custom_text",
+                                            "value": 0
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:todoapi.todoitems_action{$env,$service,action:deleted}.as_count()",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "sum"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 3,
+                            "y": 4,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 2,
+                        "definition": {
+                            "title": "Updated Items",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "default_zero(query1)"
+                                        }
+                                    ],
+                                    "conditional_formats": [
+                                        {
+                                            "custom_bg_color": "#1a3161",
+                                            "custom_fg_color": "#a1e8b6",
+                                            "comparator": ">=",
+                                            "palette": "custom_text",
+                                            "value": 0
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:todoapi.todoitems_action{$service,$env,action:updated}.as_count()",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "sum"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 4,
+                            "width": 2,
+                            "height": 2
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 4,
+                "y": 0,
+                "width": 8,
+                "height": 7
+            }
+        },
+        {
+            "id": 5037842912875164,
+            "definition": {
+                "title": "Application Performance Metrics",
+                "type": "group",
+                "background_color": "vivid_blue",
+                "show_title": true,
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 4853566476241182,
+                        "definition": {
+                            "title": "Latencia",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": false,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "time": {},
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "alias": "Average Latency",
+                                            "formula": "default_zero(query1)"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "query": "avg:trace.aspnet_core.request{$service,$env}",
+                                            "data_source": "metrics",
+                                            "name": "query1"
+                                        }
+                                    ],
+                                    "response_format": "timeseries",
+                                    "style": {
+                                        "palette": "green",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ],
+                            "yaxis": {
+                                "include_zero": true,
+                                "scale": "linear",
+                                "label": "",
+                                "min": "auto",
+                                "max": "auto"
+                            },
+                            "markers": []
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 6,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 4442668334150462,
+                        "definition": {
+                            "title": "Hits",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": false,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "time": {},
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "alias": "Hits",
+                                            "formula": "default_zero(query1)"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "query": "sum:trace.aspnet_core.request.hits{$service,$env}.as_count()",
+                                            "data_source": "metrics",
+                                            "name": "query1"
+                                        }
+                                    ],
+                                    "response_format": "timeseries",
+                                    "style": {
+                                        "palette": "cool",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "bars"
+                                }
+                            ],
+                            "yaxis": {
+                                "include_zero": true,
+                                "scale": "linear",
+                                "label": "",
+                                "min": "auto",
+                                "max": "auto"
+                            },
+                            "markers": []
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 2,
+                            "width": 6,
+                            "height": 2
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 0,
+                "width": 6,
+                "height": 5
+            }
+        },
+        {
+            "id": 7225358948722832,
+            "definition": {
+                "title": "Infrastructure Metrics",
+                "type": "group",
+                "background_color": "vivid_orange",
+                "show_title": true,
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 6064521968349728,
+                        "definition": {
+                            "title": "CPU",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": false,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "time": {},
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "alias": "CPU Usage",
+                                            "formula": "default_zero(query1)"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "query": "avg:docker.cpu.usage{$service,$env} by {service}",
+                                            "data_source": "metrics",
+                                            "name": "query1"
+                                        }
+                                    ],
+                                    "response_format": "timeseries",
+                                    "style": {
+                                        "palette": "purple",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ],
+                            "yaxis": {
+                                "include_zero": true,
+                                "scale": "linear",
+                                "label": "",
+                                "min": "auto",
+                                "max": "auto"
+                            },
+                            "markers": []
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 6,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 3614315062585762,
+                        "definition": {
+                            "title": "RSS Memory",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": false,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "time": {},
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "alias": "RSS Memory",
+                                            "formula": "default_zero(query1)"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "query": "avg:docker.mem.rss{$service,$env} by {service}",
+                                            "data_source": "metrics",
+                                            "name": "query1"
+                                        }
+                                    ],
+                                    "response_format": "timeseries",
+                                    "style": {
+                                        "palette": "blue",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ],
+                            "yaxis": {
+                                "include_zero": true,
+                                "scale": "linear",
+                                "label": "",
+                                "min": "auto",
+                                "max": "auto"
+                            },
+                            "markers": []
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 2,
+                            "width": 6,
+                            "height": 2
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 6,
+                "y": 0,
+                "width": 6,
+                "height": 5
+            }
+        },
+        {
+            "id": 5343362889745036,
+            "definition": {
+                "title": "Logs",
+                "type": "group",
+                "background_color": "vivid_pink",
+                "show_title": true,
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 4222401884338394,
+                        "definition": {
+                            "title": "Service Log Stream",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "log_stream",
+                            "indexes": [],
+                            "query": "$service $env",
+                            "sort": {
+                                "column": "time",
+                                "order": "desc"
+                            },
+                            "columns": [
+                                "@TodoItemName",
+                                "@TodoItemId"
+                            ],
+                            "show_date_column": true,
+                            "show_message_column": true,
+                            "message_display": "inline"
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 12,
+                            "height": 4
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 12,
+                "width": 12,
+                "height": 5
+            }
+        }
+    ],
+    "template_variables": [
+        {
+            "name": "service",
+            "default": "todoapi",
+            "prefix": "service",
+            "available_values": []
+        },
+        {
+            "name": "env",
+            "default": "workshop",
+            "prefix": "env",
+            "available_values": []
+        }
+    ],
+    "layout_type": "ordered",
+    "is_read_only": false,
+    "notify_list": [],
+    "reflow_type": "fixed",
+    "id": "n3x-vcs-d49"
+}
