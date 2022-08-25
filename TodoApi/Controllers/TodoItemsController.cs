@@ -26,7 +26,8 @@ namespace TodoApi.Controllers
     {
         private readonly TodoContext _context;
 
-        private StatsdConfig dogStatsdConfig;
+        private readonly  DogStatsdConfig _dogStatsdConfig;
+
         readonly ILogger<TodoItemsController> _logger;
 
         private static HttpClient _httpClient;
@@ -49,11 +50,7 @@ namespace TodoApi.Controllers
              _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _context = context;
 
-            dogStatsdConfig = new StatsdConfig{
-                StatsdServerName = "agent",
-                StatsdPort = 8125,
-                Prefix = "todoapi.dogstatsd"
-            };
+            _dogStatsdConfig = new DogStatsdConfig();
         }
         #endregion
 
@@ -106,6 +103,7 @@ namespace TodoApi.Controllers
                     _logger.LogInformation("Item updated");
                 }
                 TotalTodoItems.WithLabels(OldStatus).Dec();
+
                 TotalTodoItems.WithLabels(todoItem.IsComplete.ToString().ToLower()).Inc();
                 TodoItemsAction.WithLabels("updated").Inc();
 
@@ -144,11 +142,8 @@ namespace TodoApi.Controllers
             TotalTodoItems.WithLabels(todoItem.IsComplete.ToString().ToLower()).Inc();
             TodoItemsAction.WithLabels("added").Inc();
 
-            // Example with dogstatsd
-            using(var dogStatsdService = new DogStatsdService()){
-                dogStatsdService.Configure(dogStatsdConfig);
-                dogStatsdService.Counter("todoitems.count",1,tags: new[] { "action:added" });                    
-            }
+            // Using DogStatsD. see DogStatsdConfig.cs
+            _dogStatsdConfig.IncrementMetric("todoitems.count", tags: new[] {"iscompleted:"+todoItem.IsComplete.ToString().ToLower()});
             
             return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
         }
