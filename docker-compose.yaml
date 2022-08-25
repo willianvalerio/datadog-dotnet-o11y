@@ -8,7 +8,7 @@ services:
       tribe: 'sre'
     container_name: agent
     environment:
-      - DD_API_KEY=${DD_API_KEY}
+      - DD_API_KEY
       - DD_APM_ENABLED=true
       - DD_LOGS_ENABLED=true
       - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
@@ -17,6 +17,8 @@ services:
       - DD_LOG_LEVEL=WARN
       - DD_DOCKER_LABELS_AS_TAGS={"squad":"squad"}
       - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+      - DD_DOGSTATSD_SOCKET=/var/run/datadog/dsd.socket
+      - DD_APM_RECEIVER_SOCKET=/var/run/datadog/apm.socket
     ports:
       - "8126:8126"
       - "8125:8125"
