@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   agent:
-    image: "gcr.io/datadoghq/agent:7.38.2"
+    image: "gcr.io/datadoghq/agent:7.43.1"
     labels:
       squad: 'customer'
       tribe: 'sre'
