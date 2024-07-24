@@ -11,7 +11,9 @@ jobs:
 
     env:
       INPUT_VAR: "Hello, Terraform!"
-
+      TF_VAR_GITHUB_SHA: ${{ github.sha }}
+      TESTE_GIHUB_SHA: ${GITHUB_SHA}
+      TESTE_FUNCIONA: ${{ github.ref }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -35,5 +37,8 @@ jobs:
       run: |
         echo "Terraform output:"
         terraform output -raw output_var
-        echo Commit SHA ${GITHUB_SHA}
+        echo Commit SHA env ${GITHUB_SHA}
+        echo Commit SHA tf env ${{ env.TF_VAR_GITHUB_SHA }}
+        echo Commit TESTE_GIHUB_SHA${{ env.TESTE_GIHUB_SHA }}
+        echo Commit TESTE_FUNCIONA${{ env.TESTE_FUNCIONA }}
       working-directory: ./terraform
