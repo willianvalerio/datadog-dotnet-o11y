@@ -1,0 +1,38 @@
+name: Terraform Workflow
+
+on:
+  push:
+    branches:
+      - sci-testes
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    env:
+      INPUT_VAR: "Hello, Terraform!"
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.0.0
+
+    - name: Initialize Terraform
+      run: terraform init
+      working-directory: ./terraform
+
+    - name: Apply Terraform
+      id: apply
+      run: |
+        terraform apply -auto-approve -var="input_var=${{ env.INPUT_VAR }}"
+      working-directory: ./terraform
+
+    - name: Output Terraform variable
+      run: |
+        echo "Terraform output:"
+        terraform output -raw output_var
+      working-directory: ./terraform
