@@ -35,4 +35,5 @@ jobs:
       run: |
         echo "Terraform output:"
         terraform output -raw output_var
+        echo Commit SHA ${GITHUB_SHA}
       working-directory: ./terraform
