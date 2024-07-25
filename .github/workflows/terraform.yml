@@ -42,4 +42,6 @@ jobs:
         echo Commit TESTE_GIHUB_SHA${{ env.TESTE_GIHUB_SHA }}
         echo Commit TESTE_FUNCIONA${{ env.TESTE_FUNCIONA }}
         echo Repo Name: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
+        echo Commit com GH env ${{ github.sha }}
+        echo Repo Name: ${{ github.server_url }}/${{ github.repository }}
       working-directory: ./terraform
